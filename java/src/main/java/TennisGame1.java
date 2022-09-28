@@ -1,8 +1,8 @@
 
 public class TennisGame1 implements TennisGame {
     
-    private int m_score1 = 0;
-    private int m_score2 = 0;
+    private int player1Score = 0;
+    private int player2Score = 0;
     private String player1Name;
     private String player2Name;
 
@@ -12,65 +12,41 @@ public class TennisGame1 implements TennisGame {
     }
 
     public void wonPoint(String playerName) {
-        if (playerName == "player1")
-            m_score1 += 1;
-        else
-            m_score2 += 1;
+        if (playerName == "player1") {player1Score += 1;}
+        if (playerName == "player2") {player2Score += 1;}
     }
 
     public String getScore() {
-        String score = "";
-        int tempScore=0;
-        if (m_score1==m_score2)
-        {
-            switch (m_score1)
-            {
-                case 0:
-                        score = "Love-All";
-                    break;
-                case 1:
-                        score = "Fifteen-All";
-                    break;
-                case 2:
-                        score = "Thirty-All";
-                    break;
-                default:
-                        score = "Deuce";
-                    break;
-                
-            }
+        String scoreString = "";
+        int tempScoreTally = 0;
+
+        if (player1Score == player2Score) {
+            if (player1Score == 0) {scoreString += "Love-All";}
+            if (player1Score == 1) {scoreString += "Fifteen-All";}
+            if (player1Score == 2) {scoreString += "Thirty-All";}
+            if (player1Score == 3) {scoreString += "Deuce";}
+            if (player1Score == 4) {scoreString += "Deuce";}
+
+        } else if (player1Score >= 4 || player2Score >= 4) {
+            int scoreDifference = player1Score - player2Score;
+            if (scoreDifference == 1) {scoreString = "Advantage player1";}
+            if (scoreDifference == -1) {scoreString = "Advantage player2";}
+            if (scoreDifference >= 2) {scoreString = "Win for player1";}
+            if (scoreDifference <= -2) {scoreString = "Win for player2";}
         }
-        else if (m_score1>=4 || m_score2>=4)
-        {
-            int minusResult = m_score1-m_score2;
-            if (minusResult==1) score ="Advantage player1";
-            else if (minusResult ==-1) score ="Advantage player2";
-            else if (minusResult>=2) score = "Win for player1";
-            else score ="Win for player2";
-        }
-        else
-        {
-            for (int i=1; i<3; i++)
-            {
-                if (i==1) tempScore = m_score1;
-                else { score+="-"; tempScore = m_score2;}
-                switch(tempScore)
-                {
-                    case 0:
-                        score+="Love";
-                        break;
-                    case 1:
-                        score+="Fifteen";
-                        break;
-                    case 2:
-                        score+="Thirty";
-                        break;
-                    case 3:
-                        score+="Forty";
-                        break;
+        else {
+            for (int i = 1; i < 3; i++) {
+                if (i == 1) {tempScoreTally = player1Score;}
+                else {
+                    scoreString += "-";
+                    tempScoreTally = player2Score;
                 }
+                if (tempScoreTally == 0) {scoreString += "Love";}
+                if (tempScoreTally == 1) {scoreString += "Fifteen";}
+                if (tempScoreTally == 2) {scoreString += "Thirty";}
+                if (tempScoreTally == 3) {scoreString += "Forty";}
             }
         }
-        return score;
+        return scoreString;
     }
 }
