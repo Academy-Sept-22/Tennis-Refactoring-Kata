@@ -3,8 +3,9 @@ public class TennisGame1 implements TennisGame {
     
     private int player1Score = 0;
     private int player2Score = 0;
-    private String player1Name;
-    private String player2Name;
+    private final String player1Name;
+    private final String player2Name;
+    private String scoreString = "";
 
     public TennisGame1(String player1Name, String player2Name) {
         this.player1Name = player1Name;
@@ -12,41 +13,79 @@ public class TennisGame1 implements TennisGame {
     }
 
     public void wonPoint(String playerName) {
-        if (playerName == "player1") {player1Score += 1;}
-        if (playerName == "player2") {player2Score += 1;}
+        if (playerName.equals("player1")) {player1Score += 1;}
+        if (playerName.equals("player2")) {player2Score += 1;}
     }
 
     public String getScore() {
-        String scoreString = "";
-        int tempScoreTally = 0;
+        int scoreDifference = getScoreDifference(player1Score, player2Score);
 
-        if (player1Score == player2Score) {
-            if (player1Score == 0) {scoreString += "Love-All";}
-            if (player1Score == 1) {scoreString += "Fifteen-All";}
-            if (player1Score == 2) {scoreString += "Thirty-All";}
-            if (player1Score == 3) {scoreString += "Deuce";}
-            if (player1Score == 4) {scoreString += "Deuce";}
-
+        if (scoreDifference == 0) {
+            scoreString = getDrawScoreString(player1Score);
         } else if (player1Score >= 4 || player2Score >= 4) {
-            int scoreDifference = player1Score - player2Score;
-            if (scoreDifference == 1) {scoreString = "Advantage player1";}
-            if (scoreDifference == -1) {scoreString = "Advantage player2";}
-            if (scoreDifference >= 2) {scoreString = "Win for player1";}
-            if (scoreDifference <= -2) {scoreString = "Win for player2";}
-        }
-        else {
-            for (int i = 1; i < 3; i++) {
-                if (i == 1) {tempScoreTally = player1Score;}
-                else {
-                    scoreString += "-";
-                    tempScoreTally = player2Score;
-                }
-                if (tempScoreTally == 0) {scoreString += "Love";}
-                if (tempScoreTally == 1) {scoreString += "Fifteen";}
-                if (tempScoreTally == 2) {scoreString += "Thirty";}
-                if (tempScoreTally == 3) {scoreString += "Forty";}
+            if (isAdvantage(scoreDifference)) {
+                scoreString = getAdvantageString(scoreDifference);
             }
+            if (isGameOver(scoreDifference)) {
+                scoreString = getGameOverString(scoreDifference);
+            }
+        } else {
+            scoreString += getNormalScoreString(player1Score, player2Score);
         }
         return scoreString;
     }
+
+    private String getPlayerScoreString(int playerScore) {
+        String playerScoreString = "";
+        if (playerScore == 0) {playerScoreString = "Love";}
+        if (playerScore == 1) {playerScoreString += "Fifteen";}
+        if (playerScore == 2) {playerScoreString += "Thirty";}
+        if (playerScore == 3) {playerScoreString += "Forty";}
+        return playerScoreString;
+    }
+
+    private String getNormalScoreString(int player1Score, int player2Score) {
+        String normalScoreString = "";
+        normalScoreString += getPlayerScoreString(player1Score);
+        normalScoreString += "-";
+        normalScoreString += getPlayerScoreString(player2Score);
+        return normalScoreString;
+    }
+
+    private String getDrawScoreString(int player1Score) {
+        String drawScoreString = "";
+            if (player1Score == 0) {drawScoreString = "Love-All";}
+            if (player1Score == 1) {drawScoreString = "Fifteen-All";}
+            if (player1Score == 2) {drawScoreString = "Thirty-All";}
+            if (player1Score == 3) {drawScoreString = "Deuce";}
+            if (player1Score == 4) {drawScoreString = "Deuce";}
+            return drawScoreString;
+    }
+
+    private int getScoreDifference(int player1Score, int player2Score) {
+        return player1Score - player2Score;
+    }
+
+    private boolean isAdvantage(int scoreDifference) {
+        return scoreDifference == 1 || scoreDifference == -1;
+    }
+
+    private String getAdvantageString(int scoreDifference) {
+        if (scoreDifference > 0) {
+            return "Advantage player1";
+        }
+        return "Advantage player2";
+    }
+
+    private boolean isGameOver(int scoreDifference) {
+        return scoreDifference >= 2 || scoreDifference <= -2;
+    }
+
+    private String getGameOverString(int scoreDifference) {
+        String gameOverString = "Win for player";
+        if (scoreDifference >= 2) {gameOverString += "1";}
+        if (scoreDifference <= -2) {gameOverString += "2";}
+        return gameOverString;
+    }
+
 }
